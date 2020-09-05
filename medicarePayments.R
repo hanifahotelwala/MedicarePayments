@@ -1,0 +1,10 @@
+# Medicare payments data analysis. 
+library(readr)
+library(readxl)
+library(haven)
+setwd("/Users/hanifahotelwala/Documents/CodeBase/Rstudio/msda/dataviz/MedicarePayments/")
+getwd()
+md = read_tsv("data/Medicare_Provider_Util_Payment_PUF_CY2017.txt")
+View(md)
+dim(md)
+class(md)
