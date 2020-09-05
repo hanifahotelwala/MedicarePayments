@@ -2,4 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-~/data/*
+/Users/hanifahotelwala/Documents/CodeBase/Rstudio/msda/dataviz/MedicarePayments/data/Medicare_Provider_Util_Payment_PUF_CY2017.txt
+/Users/hanifahotelwala/Documents/CodeBase/Rstudio/msda/dataviz/MedicarePayments/data/Medicare-Physician-and-Other-Supplier-PUF-SAS-Infile.sas
+/Users/hanifahotelwala/Documents/CodeBase/Rstudio/msda/dataviz/MedicarePayments/data/CMS_AMA_CPT_license_agreement.pdf
