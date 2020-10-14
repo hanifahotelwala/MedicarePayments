@@ -7,7 +7,7 @@ library(zipcode)
 setwd("/Users/hanifahotelwala/Documents/CodeBase/Rstudio/msda/dataviz/MedicarePayments/")
 getwd()
 md = read_tsv("data/Medicare_Provider_Util_Payment_PUF_CY2017.txt")
-View(md)
+View(md)bn
 dim(md)
 class(md)
 summary(md)
@@ -43,8 +43,28 @@ ggplot(data = df_providerType_by_averagesOfMedicare,  ## too many providers list
 
 ## Dataframe with only Texas. 
 df_TexasOnly <- filter(md_data, nppes_provider_state=="TX") ##filtering by state.
-View(df_byStateOnly)
+View(df_TexasOnly)
 
 #df consisting of the columns of interest only
 df_selectedColumns <- df_TexasOnly %>% select(nppes_provider_gender, nppes_provider_city,nppes_provider_state,nppes_provider_zip, provider_type,place_of_service, medicare_participation_indicator,hcpcs_code, hcpcs_description, line_srvc_cnt, bene_unique_cnt, bene_day_srvc_cnt, average_submitted_chrg_amt, average_Medicare_payment_amt)
 View(df_selectedColumns)
+
+##### October 13 analysis. 
+# grouping by hcpcs codes with letters in front of them 
+df_hcpcs_alphaNumerica <- df_selectedColumns %>%  filter(str_detect(hcpcs_code, "[:alpha:]"))
+View(df_hcpcs_alphaNumerica)
+
+##Occurances of hcpcs codes + cpt codes mixed in 
+HCPCSandCPT_occurances<- table(unlist(df_selectedColumns$hcpcs_code))
+View(HCPCSandCPT_occurances) ##click on frequency to assess what is found the most. 
+
+##Occurances of hcpcs codes only 
+HCPCS_occurances<- table(unlist(df_hcpcs_alphaNumerica$hcpcs_code))
+View(HCPCS_occurances) ##click on frequency to assess what is found the most. 
+
+
+
+
+
+
+
