@@ -62,7 +62,19 @@ View(HCPCSandCPT_occurances) ##click on frequency to assess what is found the mo
 HCPCS_occurances<- table(unlist(df_hcpcs_alphaNumerica$hcpcs_code))
 View(HCPCS_occurances) ##click on frequency to assess what is found the most. 
 
+##data frame with most coded hcpcs code: G0008 - flu
+df_g0008 <- df_hcpcs_alphaNumerica %>% filter(hcpcs_code == "G0008") 
+df_columnsOfInterest <- df_g0008 %>% select(nppes_provider_gender, average_submitted_chrg_amt, nppes_provider_city)
+df_genderAndChargeByCity_forFlu <- df_columnsOfInterest %>% 
+                            group_by(nppes_provider_gender)  %>% 
+                            summarize(mean_average_submitted_chart_amt= mean(average_submitted_chrg_amt, na.rm=TRUE), 
+                            .groups="drop")
+  
+View(df_genderAndChargeByCity_forFlu)
 
+ggplot(df_genderAndChargeByCity_forFlu, aes(nppes_provider_gender)) +
+  geom_bar(stat="count", aes(fill=nppes_provider_gender, color="yellow")) +
+  theme(legend.position="none") ##not working the way i want it to. 
 
 
 
