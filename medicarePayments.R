@@ -77,25 +77,9 @@ ggplot(df_genderAndChargeByCity_forFlu, aes(nppes_provider_gender)) +
   theme(legend.position="none") ##not working the way i want it to. 
 
 
-#oct 20 
+#oct 18 
 #find unique nppes_credentials 
 distinct_credentials<- distinct(df_selectedColumns,nppes_credentials)
-
-#View(distinct_credentials)
-#is.factor(distinct_credentials)
-#test <- str_replace(distinct_credentials, "[.]","")
-#View(test)
-
-
-##
-
-df_cleaningCredentials <- str_replace_all(df_selectedColumns$nppes_credentials, "[.]","")  #worked 
-#colnames(df_cleaningCredentials) <- c("revised_nppes_credentials")
-df_cleaningCredentials
-View(df_cleaningCredentials)
-test <- df_selectedColumns %>% inner_join(.,df_cleaningCredentials, by="nppes_credentials")
-View(test)
-
 
 new_nppes_credentials_addedToDataframe<- df_selectedColumns %>% mutate(new_nppes_credentials = str_replace_all(df_selectedColumns$nppes_credentials, "[.]","") )
 class(new_nppes_credentials_addedToDataframe) #output : "tbl_df"     "tbl"        "data.frame"
@@ -103,6 +87,23 @@ df_new_NC <- as.data.frame(new_nppes_credentials_addedToDataframe) #converting t
 View(df_new_NC)
 class(df_new_NC) #converterd  to dataframe
 revised_selectedColumns <- df_new_NC %>% subset(select=-nppes_credentials)
-View(revised_selectedColumns)
+revised_selectedColumns <- revised_selectedColumns %>% subset(select=c(nppes_provider_gender,new_nppes_credentials,nppes_provider_city:average_Medicare_payment_amt))
+View(revised_selectedColumns) ##HAS NEW NPPES_CREDENTIALS CLEANED UP
 
+######### oct 19 ##########
+# grouping by hcpcs codes with letters in front of them only
+df_hcpcs_alphaNumerica <- revised_selectedColumns %>%  filter(str_detect(hcpcs_code, "[:alpha:]"))
+View(df_hcpcs_alphaNumerica)
 
+##distinct tests
+seeDistinctProviderType<- distinct(revised_selectedColumns,provider_type)
+View(seeDistinctProviderType)
+viewCredentialFrequency <- table(unlist(revised_selectedColumns$new_nppes_credentials)) ##Most credential used is MD: #473688 (2) DO- #34520 
+View(viewCredentialFrequency)
+
+##### oct 21 ###############
+filter_byOnly_MD <- revised_selectedColumns %>%  ##filtering by only nppes_credentials == MD after cleaning. 
+  filter(new_nppes_credentials=="MD") 
+
+View(filter_byOnly_MD)
+     
