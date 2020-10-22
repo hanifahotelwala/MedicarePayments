@@ -46,7 +46,7 @@ df_TexasOnly <- filter(md_data, nppes_provider_state=="TX") ##filtering by state
 View(df_TexasOnly)
 
 #df consisting of the columns of interest only
-df_selectedColumns <- df_TexasOnly %>% select(nppes_provider_gender, nppes_provider_city,nppes_provider_state,nppes_provider_zip, provider_type,place_of_service, medicare_participation_indicator,hcpcs_code, hcpcs_description, line_srvc_cnt, bene_unique_cnt, bene_day_srvc_cnt, average_submitted_chrg_amt, average_Medicare_payment_amt)
+df_selectedColumns <- df_TexasOnly %>% select(nppes_provider_gender, nppes_credentials, nppes_provider_city,nppes_provider_state,nppes_provider_zip, provider_type,place_of_service, medicare_participation_indicator,hcpcs_code, hcpcs_description, line_srvc_cnt, bene_unique_cnt, bene_day_srvc_cnt, average_submitted_chrg_amt, average_Medicare_payment_amt, na.rm=TRUE)
 View(df_selectedColumns)
 
 ##### October 13 analysis. 
@@ -77,6 +77,32 @@ ggplot(df_genderAndChargeByCity_forFlu, aes(nppes_provider_gender)) +
   theme(legend.position="none") ##not working the way i want it to. 
 
 
+#oct 20 
+#find unique nppes_credentials 
+distinct_credentials<- distinct(df_selectedColumns,nppes_credentials)
 
+#View(distinct_credentials)
+#is.factor(distinct_credentials)
+#test <- str_replace(distinct_credentials, "[.]","")
+#View(test)
+
+
+##
+
+df_cleaningCredentials <- str_replace_all(df_selectedColumns$nppes_credentials, "[.]","")  #worked 
+#colnames(df_cleaningCredentials) <- c("revised_nppes_credentials")
+df_cleaningCredentials
+View(df_cleaningCredentials)
+test <- df_selectedColumns %>% inner_join(.,df_cleaningCredentials, by="nppes_credentials")
+View(test)
+
+
+new_nppes_credentials_addedToDataframe<- df_selectedColumns %>% mutate(new_nppes_credentials = str_replace_all(df_selectedColumns$nppes_credentials, "[.]","") )
+class(new_nppes_credentials_addedToDataframe) #output : "tbl_df"     "tbl"        "data.frame"
+df_new_NC <- as.data.frame(new_nppes_credentials_addedToDataframe) #converting to data.frame 
+View(df_new_NC)
+class(df_new_NC) #converterd  to dataframe
+revised_selectedColumns <- df_new_NC %>% subset(select=-nppes_credentials)
+View(revised_selectedColumns)
 
 
