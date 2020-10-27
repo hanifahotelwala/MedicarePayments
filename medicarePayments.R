@@ -121,5 +121,64 @@ View(test)
 x <- x %>% subset(select=-X)
 View(x)
 write.csv(x,"/Users/hanifahotelwala/Desktop/TXMedicarePayments_ByMD.csv" )
-y <- read.csv("/Users/hanifahotelwala/Desktop/TXMedicarePayments_ByMD.csv")
-View(y)
+########updated medicare payments ################
+ump = read_csv("/Users/hanifahotelwala/Desktop/TXMedicarePayments_ByMD/TXMedicarePayments_ByMD.csv")
+head(ump)
+View(ump)
+
+
+
+#### #1 health issue in texas: heart disease
+###CPT is a code set to describe medical, surgical ,and diagnostic services; 
+#HCPCS are codes based on the CPT to provide standardized coding when healthcare is delivered.
+
+#distincts
+distinct_pt<- distinct(ump, provider_type)
+View(distinct_pt)
+#x <- distinct(cardioRecordings, nppes_provider_gender)
+View(x)
+
+cardioRecordings <- filter(ump, provider_type=="Cardiology")
+View(cardioRecordings) ##cardio recordings in tx, 28k+ observaations 
+
+cardioRecordingsByCity_count <- table(unlist(cardioRecordings$nppes_provider_city))
+View(cardioRecordingsByCity_count)
+#### CITIES 500 + recordings. 
+#HOUSTON - 4694, DALLAS - 2195, SAN ANTONIO - 2065, LUBBOCK - 991, PLANO-977, AUSTIN - 944
+#TYLER- 738 , EL PASO - 691, FORT WORTH - 689, MCALLEN- 611, THE WOODLANDS - 566
+# c("HOUSTON", "DALLAS", "SAN ANTONIO", "LUBBOCK", "PLANO", "AUSTIN", "TYLER", "EL PASO", "FORT WORTH", "MCALLEN", "THE WOODLANDS")
+
+cardioRecordingsByHouston <- filter(cardioRecordings, nppes_provider_city=="HOUSTON")
+View(cardioRecordingsByHouston)
+
+# grouping by hcpcs codes with letters in front of them 
+CRBH_alphaNumericaHCPCS <- cardioRecordingsByHouston %>%  filter(str_detect(hcpcs_code, "[:alpha:]"))
+View(CRBH_alphaNumericaHCPCS)
+
+mostalphaHCPCScodes <- table(unlist(CRBH_alphaNumericaHCPCS$hcpcs_code))
+View(mostalphaHCPCScodes) #J2785 - 103 , A9500 - 78
+
+# filter by most coded 
+J2785_only <- CRBH_alphaNumericaHCPCS %>%  filter(hcpcs_code=="J2785")
+
+
+ggplot(ump, aes(x=nppes_provider_city,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot City + bene unique cnt  -version 1") +
+  geom_point(aes(fill=nppes_provider_gender), alpha=0.3, shape=21) 
+
+
+
+ggplot(cardioRecordingsByHouston, aes(x=hcpcs_code,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN HOUSTON -version 1") +
+  geom_point(aes(fill=nppes_provider_gender), alpha=0.3, shape=21) 
+
+ggplot(CRBH_alphaNumericaHCPCS, aes(x=hcpcs_code,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN HOUSTON -version 2") +
+  geom_point(aes(fill=nppes_provider_gender), alpha=0.3, shape=21) 
+
+ggplot(J2785_only, aes(x=nppes_provider_gender,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN HOUSTON -version 3") +
+  geom_point(aes(fill=hcpcs_code), alpha=0.3, shape=21) 
+
+
+
