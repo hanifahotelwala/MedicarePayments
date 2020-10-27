@@ -7,7 +7,7 @@ library(zipcode)
 setwd("/Users/hanifahotelwala/Documents/CodeBase/Rstudio/msda/dataviz/MedicarePayments/")
 getwd()
 md = read_tsv("data/Medicare_Provider_Util_Payment_PUF_CY2017.txt")
-View(md)bn
+View(md)
 dim(md)
 class(md)
 summary(md)
@@ -46,7 +46,7 @@ df_TexasOnly <- filter(md_data, nppes_provider_state=="TX") ##filtering by state
 View(df_TexasOnly)
 
 #df consisting of the columns of interest only
-df_selectedColumns <- df_TexasOnly %>% select(nppes_provider_gender, nppes_credentials, nppes_provider_city,nppes_provider_state,nppes_provider_zip, provider_type,place_of_service, medicare_participation_indicator,hcpcs_code, hcpcs_description, line_srvc_cnt, bene_unique_cnt, bene_day_srvc_cnt, average_submitted_chrg_amt, average_Medicare_payment_amt, na.rm=TRUE)
+df_selectedColumns <- df_TexasOnly %>% select(nppes_provider_gender, nppes_credentials, nppes_provider_city,nppes_provider_state,nppes_provider_zip, provider_type,place_of_service, medicare_participation_indicator,hcpcs_code, hcpcs_description, line_srvc_cnt, bene_unique_cnt, bene_day_srvc_cnt, average_submitted_chrg_amt, average_Medicare_payment_amt)
 View(df_selectedColumns)
 
 ##### October 13 analysis. 
@@ -105,5 +105,21 @@ View(viewCredentialFrequency)
 filter_byOnly_MD <- revised_selectedColumns %>%  ##filtering by only nppes_credentials == MD after cleaning. 
   filter(new_nppes_credentials=="MD") 
 
+write.csv(filter_byOnly_MD, "/Users/hanifahotelwala/Desktop/filter_byOnly_MD.csv")
+
 View(filter_byOnly_MD)
      
+
+x <- read.csv("/Users/hanifahotelwala/Desktop/filter_byOnly_MD.csv")
+View(x)
+
+x <- drop_na(x)
+View(x)
+class(x)
+test <- table(unlist(x$nppes_provider_gender))
+View(test)
+x <- x %>% subset(select=-X)
+View(x)
+write.csv(x,"/Users/hanifahotelwala/Desktop/TXMedicarePayments_ByMD.csv" )
+y <- read.csv("/Users/hanifahotelwala/Desktop/TXMedicarePayments_ByMD.csv")
+View(y)
