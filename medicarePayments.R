@@ -155,7 +155,7 @@ View(cardioRecordingsByHouston)
 CRBH_alphaNumericaHCPCS <- cardioRecordingsByHouston %>%  filter(str_detect(hcpcs_code, "[:alpha:]"))
 View(CRBH_alphaNumericaHCPCS)
 
-mostalphaHCPCScodes <- table(unlist(CRBH_alphaNumericaHCPCS$hcpcs_code))
+mostalphaHCPCScodes <- table(unlist(CRBH_alphaNumericaHCPCS$hcpcs_code)) #103 obs
 View(mostalphaHCPCScodes) #J2785 - 103 , A9500 - 78
 
 # filter by most coded 
@@ -180,5 +180,32 @@ ggplot(J2785_only, aes(x=nppes_provider_gender,y=bene_unique_cnt)) +
   ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN HOUSTON -version 3") +
   geom_point(aes(fill=hcpcs_code), alpha=0.3, shape=21) 
 
+##cont for dallas, san , austin
+cardioRecByHcpcs <- cardioRecordings %>% filter(hcpcs_code=="J2785")
+View(cardioRecByHcpcs)
 
+#Dallas 
+dallas <- cardioRecByHcpcs %>% filter(nppes_provider_city=="DALLAS") ## 29  observations 
+ggplot(dallas, aes(x=nppes_provider_gender,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN Dallas -version 4") +
+  geom_point(aes(fill=hcpcs_code), alpha=0.3, shape=21) 
+
+#san antonio 
+sa <-  cardioRecByHcpcs %>% filter(nppes_provider_city=="SAN ANTONIO")
+ggplot(sa, aes(x=nppes_provider_gender,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN SA -version 4") +
+  geom_point(aes(fill=hcpcs_code), alpha=0.3, shape=21) 
+
+#Austin 
+austin <-  cardioRecByHcpcs %>% filter(nppes_provider_city=="AUSTIN") ## 8 obs
+ggplot(austin, aes(x=nppes_provider_gender,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt IN AUSTIN -version 4") +
+  geom_point(aes(fill=hcpcs_code), alpha=0.3, shape=21) 
+
+### attempt to put all of them together withot the filter of J2785
+byMostCities <- cardioRecordings %>% filter(nppes_provider_city==c("HOUSTON", "SAN ANTONIO", "AUSTIN", "DALLAS"))
+View(byMostCities)
+ggplot(byMostCities, aes(x=nppes_provider_city,y=bene_unique_cnt)) +
+  ggtitle("Scatterplot hcpcs Codes + bene unique cnt in Most coded cities -version 4") +
+  geom_point(aes(fill=nppes_provider_gender), alpha=0.3, shape=21) 
 
